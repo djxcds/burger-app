@@ -11,7 +11,6 @@ const order = (props) => {
           </span>
         );
     });
-    console.log(transformedIngredients)
 
     return (
       <div className={classes.Order}>

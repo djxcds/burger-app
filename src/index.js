@@ -1,17 +1,39 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { reducer } from './combineReducers';
+
+const logger = store => {
+    return next => {
+        return action => {
+            const result = next(action);
+            return result;
+        }
+    }
+}
+
+const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
+
+const store = createStore(
+  reducer,
+  composeEnhancers(applyMiddleware(logger, thunk))
+);
 
 const app = (
-    <BrowserRouter>
         <StrictMode>
-            <App />
+            <Provider store={store}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </Provider>
         </StrictMode>
-    </BrowserRouter>
 )
 
 ReactDOM.render(app, document.getElementById('root'));
